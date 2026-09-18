@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import communityYogaImg from "@/assets/community-yoga-class.webp";
 import whyYogaImg from "@/assets/why-yoga-benefits.webp";
@@ -181,8 +181,31 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function LeafSprig({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 170" fill="none" className={className} aria-hidden="true">
+      <path d="M62 168C58 124 60 70 74 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M66 130C48 126 34 113 30 94c19 2 33 15 36 36Z" fill="currentColor" />
+      <path d="M67 106C84 100 96 86 99 67c-18 4-31 18-32 39Z" fill="currentColor" />
+      <path d="M64 82C48 76 36 62 33 44c18 3 30 17 31 38Z" fill="currentColor" />
+      <path d="M70 58c15-7 25-21 26-39-16 5-26 19-26 39Z" fill="currentColor" />
+      <path d="M71 34C60 27 53 16 52 3c12 6 19 17 19 31Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function Index() {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const [activeReview, setActiveReview] = useState(0);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (media.matches) return;
+    const timer = window.setInterval(() => {
+      setActiveReview((current) => (current + 1) % reviews.length);
+    }, 6000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const video = heroVideoRef.current;
@@ -457,33 +480,75 @@ export function Index() {
         </div>
       </section>
 
-      <section aria-labelledby="reviews-heading" className="reviews-section overflow-hidden px-4 py-14 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-8 sm:mb-10">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-courses-accent sm:text-base">
+      <section aria-labelledby="reviews-heading" className="reviews-section relative overflow-hidden px-4 py-14 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+        <LeafSprig className="pointer-events-none absolute -top-2 right-0 w-28 text-reviews-sage/70 sm:w-40 lg:w-52" />
+        <LeafSprig className="pointer-events-none absolute bottom-4 left-0 w-24 -scale-x-100 text-reviews-sage/60 sm:w-36 lg:w-44" />
+        <LeafSprig className="pointer-events-none absolute left-0 top-1/3 hidden w-20 -scale-x-100 text-reviews-sage/40 lg:block" />
+
+        <div className="relative mx-auto max-w-6xl">
+          <div className="mb-10 sm:mb-14">
+            <span aria-hidden="true" className="mb-5 block h-1 w-12 rounded-full bg-reviews-accent" />
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.35em] text-reviews-accent sm:text-base">
               Student Voices
             </p>
-            <h2 id="reviews-heading" className="font-serif text-4xl leading-tight text-courses-heading sm:text-5xl lg:text-6xl">
-              What our students say
+            <h2 id="reviews-heading" className="font-serif text-4xl uppercase leading-[1.1] text-reviews-heading sm:text-5xl lg:text-6xl">
+              What our<br />students say
             </h2>
           </div>
-        </div>
 
-        <div className="reviews-marquee" aria-label="Student reviews">
-          <div className="reviews-track">
-            {[...reviews, ...reviews].map((review, i) => (
-              <figure
-                key={`${review.name}-${i}`}
-                aria-hidden={i >= reviews.length ? "true" : undefined}
-                className="flex aspect-square w-[min(78vw,18.5rem)] shrink-0 flex-col justify-between rounded-[1.25rem] bg-courses-card p-6 shadow-sm sm:w-[18.5rem]"
-              >
-                <blockquote className="overflow-hidden text-sm leading-6 text-courses-body">
-                  “{review.text}”
-                </blockquote>
-                <figcaption className="mt-4 font-serif text-lg text-courses-heading">
-                  {review.name}
-                </figcaption>
-              </figure>
+          <div
+            className="grid"
+            role="group"
+            aria-roledescription="carousel"
+            aria-label="Student reviews"
+          >
+            {reviews.map((review, i) => {
+              const total = reviews.length;
+              let d = i - activeReview;
+              if (d > total / 2) d -= total;
+              if (d < -total / 2) d += total;
+              const visible = Math.abs(d) <= 1;
+              return (
+                <figure
+                  key={review.name}
+                  aria-hidden={d !== 0}
+                  className="col-start-1 row-start-1 flex w-[88%] flex-col justify-self-center rounded-[1.75rem] bg-reviews-card p-7 shadow-[0_1.5rem_3.5rem_oklch(0.35_0.05_180/0.10)] transition-all duration-500 ease-out sm:w-[72%] sm:p-10 lg:w-[62%] lg:p-12"
+                  style={{
+                    transform: `translateX(${d * 108}%) scale(${d === 0 ? 1 : 0.94})`,
+                    opacity: visible ? (d === 0 ? 1 : 0.45) : 0,
+                    pointerEvents: d === 0 ? "auto" : "none",
+                    zIndex: d === 0 ? 2 : 1,
+                  }}
+                >
+                  <span aria-hidden="true" className="font-serif text-6xl leading-none text-reviews-sage sm:text-7xl">
+                    “
+                  </span>
+                  <blockquote className="mt-2 text-base leading-8 text-reviews-body sm:text-lg sm:leading-9">
+                    {review.text}
+                  </blockquote>
+                  <figcaption className="mt-6">
+                    <span aria-hidden="true" className="mb-4 block h-0.5 w-10 bg-reviews-sage" />
+                    <span className="font-serif text-lg uppercase tracking-[0.12em] text-reviews-heading sm:text-xl">
+                      {review.name}
+                    </span>
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-2.5">
+            {reviews.map((review, i) => (
+              <button
+                key={review.name}
+                type="button"
+                onClick={() => setActiveReview(i)}
+                aria-label={`Show review ${i + 1} of ${reviews.length} by ${review.name}`}
+                aria-current={i === activeReview}
+                className={`size-2.5 rounded-full transition-all duration-300 ${
+                  i === activeReview ? "scale-125 bg-reviews-heading" : "bg-reviews-heading/15 hover:bg-reviews-heading/30"
+                }`}
+              />
             ))}
           </div>
         </div>
