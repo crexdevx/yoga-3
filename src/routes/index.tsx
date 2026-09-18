@@ -393,7 +393,7 @@ export function Index() {
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-why-cta px-8 text-base font-semibold text-why-cta-text shadow-lg transition-all duration-300 hover:bg-why-cta-hover hover:shadow-xl focus-visible:ring-why-cta sm:h-14 sm:px-10 sm:text-lg"
             >
               <Link to="/about">
-                Join the Community
+                Who Are We
                 <ArrowUpRight aria-hidden="true" className="size-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             </Button>
