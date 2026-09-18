@@ -181,8 +181,31 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function LeafSprig({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 120 170" fill="none" className={className} aria-hidden="true">
+      <path d="M62 168C58 124 60 70 74 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M66 130C48 126 34 113 30 94c19 2 33 15 36 36Z" fill="currentColor" />
+      <path d="M67 106C84 100 96 86 99 67c-18 4-31 18-32 39Z" fill="currentColor" />
+      <path d="M64 82C48 76 36 62 33 44c18 3 30 17 31 38Z" fill="currentColor" />
+      <path d="M70 58c15-7 25-21 26-39-16 5-26 19-26 39Z" fill="currentColor" />
+      <path d="M71 34C60 27 53 16 52 3c12 6 19 17 19 31Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function Index() {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const [activeReview, setActiveReview] = useState(0);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (media.matches) return;
+    const timer = window.setInterval(() => {
+      setActiveReview((current) => (current + 1) % reviews.length);
+    }, 6000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const video = heroVideoRef.current;
