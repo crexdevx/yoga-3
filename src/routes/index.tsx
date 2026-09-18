@@ -208,7 +208,7 @@ export function Index() {
       >
         <video
           ref={heroVideoRef}
-          className="absolute inset-0 h-full w-full object-cover lg:inset-auto lg:left-[13%] lg:top-[-60%] lg:h-[240%] lg:w-auto"
+          className="absolute inset-0 h-full w-full object-cover lg:inset-auto lg:left-[13%] lg:top-[-60%] lg:h-[240%] lg:w-auto lg:[mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
           autoPlay
           muted
           loop
