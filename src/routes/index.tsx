@@ -204,11 +204,11 @@ export function Index() {
     <main className="bg-about-canvas">
       <section
         aria-label="North East Yoga and Meditation Centre"
-        className="relative aspect-[9/16] max-h-[100svh] w-full overflow-hidden bg-about-canvas sm:aspect-auto sm:h-[100svh] sm:max-h-none"
+        className="relative aspect-[9/16] max-h-[100svh] w-full overflow-hidden bg-about-canvas sm:aspect-auto sm:h-[100svh] sm:max-h-none sm:bg-[radial-gradient(120%_120%_at_70%_45%,rgb(252,163,32)_0%,rgb(240,130,35)_40%,rgb(185,72,25)_75%,rgb(148,45,14)_100%)]"
       >
         <video
           ref={heroVideoRef}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover sm:object-contain sm:object-[68%_center]"
           autoPlay
           muted
           loop
